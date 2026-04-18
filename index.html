@@ -1,716 +1,1063 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Sacrilégio</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#0c0d0c;
-    --bg-soft:#111211;
-    --fg:#d0ccc0;
-    --fg-dim:#7a7870;
-    --fg-faint:#3e3d38;
-    --accent:#c8b89a;
-    --accent-warm:#f5e64a;
-    --red:#d0ccc0;
-    --blue:#7ab3c8;
-    --green:#7ab87a;
-    --purple:#a98bc8;
-    --danger:#b05c4a;
-    --rule: rgba(255,255,255,0.07);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{font-size:15px}
-  body{
-    background:var(--bg);color:var(--fg);
-    font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-    font-weight:400;line-height:1.65;
-    min-height:100vh;
-  }
-  /* scanlines */
-  body::after{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:100;
-    background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.18) 2px 3px);
-    opacity:.45;
-  }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sacrilégio</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0c0d0c;
+        --bg-soft: #111211;
+        --fg: #d0ccc0;
+        --fg-dim: #7a7870;
+        --fg-faint: #3e3d38;
+        --accent: #c8b89a;
+        --accent-warm: #f5e64a;
+        --red: #d0ccc0;
+        --blue: #7ab3c8;
+        --green: #7ab87a;
+        --purple: #a98bc8;
+        --danger: #b05c4a;
+        --rule: rgba(255, 255, 255, 0.07);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        font-size: 15px;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+        font-weight: 400;
+        line-height: 1.65;
+        min-height: 100vh;
+      }
+      /* scanlines */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 100;
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0) 0 2px,
+          rgba(0, 0, 0, 0.18) 2px 3px
+        );
+        opacity: 0.45;
+      }
 
-  /* ─── INTRO SCREEN ─── */
-  #intro-screen{
-    position:fixed;inset:0;background:var(--bg);z-index:50;
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-    padding:40px 32px 32px;text-align:left;overflow-y:auto;
-  }
-  #intro-screen.hidden{display:none}
+      /* ─── INTRO SCREEN ─── */
+      #intro-screen {
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 40px 32px 32px;
+        text-align: left;
+        overflow-y: auto;
+      }
+      #intro-screen.hidden {
+        display: none;
+      }
 
-  .intro-wrap{
-    max-width:680px;width:100%;
-  }
-  .w6-art{
-    font-size:13px;
-    line-height:1.1;
-    letter-spacing:.04em;
-    white-space:pre;
-    color:var(--accent-warm);
-    text-shadow:0 0 18px rgba(245,230,74,.25);
-    margin-bottom:28px;
-    text-align:center;
-    width:100%;
-  }
-  .intro-lines{
-    min-height:0;
-    font-size:13px;
-    line-height:1.6;
-  }
-  .intro-line{
-    display:block;
-    opacity:0;
-    transition:opacity .3s ease;
-  }
-  .intro-line.vis{opacity:1}
-  .intro-line.em{
-    color:var(--fg);font-weight:500;
-    margin-top:6px;
-  }
-  .intro-line.shout{
-    color:var(--fg);
-    font-size:14px;
-    letter-spacing:.04em;
-    margin-top:2px;
-  }
-  .intro-line.big{
-    font-size:17px;font-weight:700;
-    letter-spacing:.08em;color:#fff;
-    margin-top:6px;
-  }
-  .intro-line .c-warm{color:var(--accent-warm)}
-  .intro-line .c-blue{color:var(--blue)}
-  .intro-line .c-green{color:var(--green)}
-  .intro-line .c-purple{color:var(--purple)}
-  .intro-line .c-red{color:var(--red)}
-  .intro-line .c-dim{color:var(--fg-dim)}
-  .intro-line .c-white{color:#fff;font-weight:500}
-  .intro-line.gap{margin-top:10px}
-  .intro-caret{
-    display:inline-block;width:.55ch;height:1em;
-    background:var(--accent);vertical-align:-2px;
-    animation:blink 1.05s steps(1) infinite;
-    margin-left:2px;
-  }
-  @keyframes blink{50%{opacity:0}}
+      .intro-wrap {
+        max-width: 680px;
+        width: 100%;
+      }
+      .w6-art {
+        font-size: 13px;
+        line-height: 1.1;
+        letter-spacing: 0.04em;
+        white-space: pre;
+        color: var(--accent-warm);
+        text-shadow: 0 0 18px rgba(245, 230, 74, 0.25);
+        margin-bottom: 28px;
+        text-align: center;
+        width: 100%;
+      }
+      .intro-lines {
+        min-height: 0;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .intro-line {
+        display: block;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .intro-line.vis {
+        opacity: 1;
+      }
+      .intro-line.em {
+        color: var(--fg);
+        font-weight: 500;
+        margin-top: 6px;
+      }
+      .intro-line.shout {
+        color: var(--fg);
+        font-size: 14px;
+        letter-spacing: 0.04em;
+        margin-top: 2px;
+      }
+      .intro-line.big {
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #fff;
+        margin-top: 6px;
+      }
+      .intro-line .c-warm {
+        color: var(--accent-warm);
+      }
+      .intro-line .c-blue {
+        color: var(--blue);
+      }
+      .intro-line .c-green {
+        color: var(--green);
+      }
+      .intro-line .c-purple {
+        color: var(--purple);
+      }
+      .intro-line .c-red {
+        color: var(--red);
+      }
+      .intro-line .c-dim {
+        color: var(--fg-dim);
+      }
+      .intro-line .c-white {
+        color: #fff;
+        font-weight: 500;
+      }
+      .intro-line.gap {
+        margin-top: 10px;
+      }
+      .intro-caret {
+        display: inline-block;
+        width: 0.55ch;
+        height: 1em;
+        background: var(--accent);
+        vertical-align: -2px;
+        animation: blink 1.05s steps(1) infinite;
+        margin-left: 2px;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
 
-  .press-any{
-    margin-top:24px;
-    font-size:15px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--fg-dim);
-    display:none;
-    align-items:center;gap:12px;
-  }
-  .press-any.vis{display:flex}
-  .press-any .pk{color:var(--accent-warm);font-size:18px;animation:blink 1.1s steps(1) infinite}
+      .press-any {
+        margin-top: 24px;
+        font-size: 15px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--fg-dim);
+        display: none;
+        align-items: center;
+        gap: 12px;
+      }
+      .press-any.vis {
+        display: flex;
+      }
+      .press-any .pk {
+        color: var(--accent-warm);
+        font-size: 18px;
+        animation: blink 1.1s steps(1) infinite;
+      }
 
-  /* ─── FORM SCREEN ─── */
-  #form-screen{
-    display:none;
-    max-width:780px;margin:0 auto;
-    padding:48px 28px 100px;
-    position:relative;z-index:10;
-  }
-  #form-screen.vis{display:block;animation:fadein .6s ease}
-  @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+      /* ─── FORM SCREEN ─── */
+      #form-screen {
+        display: none;
+        max-width: 780px;
+        margin: 0 auto;
+        padding: 48px 28px 100px;
+        position: relative;
+        z-index: 10;
+      }
+      #form-screen.vis {
+        display: block;
+        animation: fadein 0.6s ease;
+      }
+      @keyframes fadein {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
 
-  .form-pre{
-    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--fg-faint);margin-bottom:40px;
-    border-bottom:1px dashed var(--rule);padding-bottom:14px;
-    display:flex;justify-content:space-between;
-  }
+      .form-pre {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--fg-faint);
+        margin-bottom: 40px;
+        border-bottom: 1px dashed var(--rule);
+        padding-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+      }
 
-  /* name block */
-  .name-block{
-    margin-bottom:48px;
-  }
-  .name-label{
-    font-size:12px;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--fg-dim);margin-bottom:14px;
-  }
-  .name-label b{color:var(--accent);font-weight:500}
-  .name-input-wrap{
-    display:flex;align-items:center;gap:10px;
-    border-bottom:1px solid rgba(245,230,74,.35);
-    padding-bottom:8px;
-  }
-  .name-input-wrap .pr{color:var(--accent-warm);font-size:18px}
-  .name-input-wrap input{
-    flex:1;background:transparent;border:0;outline:none;
-    font:inherit;font-size:22px;font-weight:300;
-    color:var(--fg);letter-spacing:.04em;
-    caret-color:var(--accent-warm);
-  }
-  .name-input-wrap input::placeholder{color:var(--fg-faint)}
+      /* name block */
+      .name-block {
+        margin-bottom: 48px;
+      }
+      .name-label {
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--fg-dim);
+        margin-bottom: 14px;
+      }
+      .name-label b {
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .name-input-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid rgba(245, 230, 74, 0.35);
+        padding-bottom: 8px;
+      }
+      .name-input-wrap .pr {
+        color: var(--accent-warm);
+        font-size: 18px;
+      }
+      .name-input-wrap input {
+        flex: 1;
+        background: transparent;
+        border: 0;
+        outline: none;
+        font: inherit;
+        font-size: 22px;
+        font-weight: 300;
+        color: var(--fg);
+        letter-spacing: 0.04em;
+        caret-color: var(--accent-warm);
+      }
+      .name-input-wrap input::placeholder {
+        color: var(--fg-faint);
+      }
 
-  /* divider */
-  .divider{
-    height:1px;background:linear-gradient(to right, transparent, var(--rule) 20%, var(--rule) 80%, transparent);
-    margin:48px 0;
-  }
+      /* divider */
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          var(--rule) 20%,
+          var(--rule) 80%,
+          transparent
+        );
+        margin: 48px 0;
+      }
 
-  /* question blocks */
-  .qblock{
-    margin-bottom:52px;
-  }
-  .qn{
-    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--fg-faint);margin-bottom:18px;
-    display:flex;align-items:center;gap:12px;
-  }
-  .qn .num{color:var(--accent);font-size:14px;font-weight:700}
-  .qn .rule{flex:1;height:1px;background:linear-gradient(to right,var(--rule),transparent)}
-  .qtext{
-    font-size:17px;line-height:1.7;color:var(--fg);margin-bottom:22px;
-    text-wrap:pretty;
-  }
-  .qtext em{
-    font-style:normal;color:var(--fg-dim);font-size:15px;
-  }
+      /* question blocks */
+      .qblock {
+        margin-bottom: 52px;
+      }
+      .qn {
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--fg-faint);
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .qn .num {
+        color: var(--accent);
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .qn .rule {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to right, var(--rule), transparent);
+      }
+      .qtext {
+        font-size: 17px;
+        line-height: 1.7;
+        color: var(--fg);
+        margin-bottom: 22px;
+        text-wrap: pretty;
+      }
+      .qtext em {
+        font-style: normal;
+        color: var(--fg-dim);
+        font-size: 15px;
+      }
 
-  .answer-field{
-    position:relative;
-  }
-  .answer-field::before{
-    content:attr(data-n);
-    position:absolute;top:14px;left:14px;
-    color:var(--fg-faint);font-size:11px;letter-spacing:.1em;pointer-events:none;
-  }
-  .answer-field textarea{
-    width:100%;min-height:90px;
-    background:var(--bg-soft);
-    border:1px solid var(--rule);
-    border-radius:6px;
-    padding:12px 14px 12px 36px;
-    color:var(--fg);font:inherit;font-size:14px;line-height:1.7;
-    resize:vertical;outline:none;
-    caret-color:var(--accent-warm);
-    transition:border-color .2s;
-  }
-  .answer-field textarea:focus{border-color:rgba(245,230,74,.4)}
-  .answer-field textarea::placeholder{color:var(--fg-faint)}
+      .answer-field {
+        position: relative;
+      }
+      .answer-field::before {
+        content: attr(data-n);
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        color: var(--fg-faint);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        pointer-events: none;
+      }
+      .answer-field textarea {
+        width: 100%;
+        min-height: 90px;
+        background: var(--bg-soft);
+        border: 1px solid var(--rule);
+        border-radius: 6px;
+        padding: 12px 14px 12px 36px;
+        color: var(--fg);
+        font: inherit;
+        font-size: 14px;
+        line-height: 1.7;
+        resize: vertical;
+        outline: none;
+        caret-color: var(--accent-warm);
+        transition: border-color 0.2s;
+      }
+      .answer-field textarea:focus {
+        border-color: rgba(245, 230, 74, 0.4);
+      }
+      .answer-field textarea::placeholder {
+        color: var(--fg-faint);
+      }
 
-  /* special last question */
-  .qblock.last .qtext{
-    font-size:16px;color:var(--fg-dim);
-  }
-  .qblock.last .qtext .hl{
-    color:var(--fg);
-  }
-  .qblock.last .qtext .soft{
-    display:block;margin-top:10px;font-size:15px;color:var(--accent-warm);
-    font-weight:400;letter-spacing:.03em;
-  }
+      /* special last question */
+      .qblock.last .qtext {
+        font-size: 16px;
+        color: var(--fg-dim);
+      }
+      .qblock.last .qtext .hl {
+        color: var(--fg);
+      }
+      .qblock.last .qtext .soft {
+        display: block;
+        margin-top: 10px;
+        font-size: 15px;
+        color: var(--accent-warm);
+        font-weight: 400;
+        letter-spacing: 0.03em;
+      }
 
-  /* submit row */
-  .submit-row{
-    margin-top:16px;
-    display:flex;align-items:center;justify-content:flex-end;gap:14px;flex-wrap:wrap;
-  }
-  .foot-note{
-    flex:1;min-width:200px;
-    color:var(--fg-faint);font-size:12px;line-height:1.6;
-  }
-  button.reset-btn{
-    appearance:none;background:transparent;border:1px solid var(--fg-faint);
-    color:var(--fg-dim);font:inherit;font-size:11px;letter-spacing:.14em;
-    text-transform:uppercase;padding:10px 14px;border-radius:5px;cursor:pointer;
-    transition:color .2s, border-color .2s;
-  }
-  button.reset-btn:hover{color:var(--fg);border-color:var(--fg-dim)}
-  button.send-btn{
-    appearance:none;border:1px solid rgba(245,230,74,.5);
-    background:linear-gradient(180deg,rgba(245,230,74,.1),rgba(245,230,74,.03));
-    color:var(--accent);font:inherit;font-size:12px;letter-spacing:.16em;
-    text-transform:uppercase;padding:12px 22px;border-radius:5px;cursor:pointer;
-    display:inline-flex;align-items:center;gap:10px;
-    transition:border-color .2s, box-shadow .2s;
-  }
-  button.send-btn:hover{
-    border-color:rgba(245,230,74,.8);
-    box-shadow:0 0 0 1px rgba(245,230,74,.12), 0 8px 28px -12px rgba(245,230,74,.35);
-  }
-  button.send-btn .c{opacity:1}
+      /* submit row */
+      .submit-row {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+      .foot-note {
+        flex: 1;
+        min-width: 200px;
+        color: var(--fg-faint);
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      button.reset-btn {
+        appearance: none;
+        background: transparent;
+        border: 1px solid var(--fg-faint);
+        color: var(--fg-dim);
+        font: inherit;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 10px 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+      }
+      button.reset-btn:hover {
+        color: var(--fg);
+        border-color: var(--fg-dim);
+      }
+      button.send-btn {
+        appearance: none;
+        border: 1px solid rgba(245, 230, 74, 0.5);
+        background: linear-gradient(
+          180deg,
+          rgba(245, 230, 74, 0.1),
+          rgba(245, 230, 74, 0.03)
+        );
+        color: var(--accent);
+        font: inherit;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        padding: 12px 22px;
+        border-radius: 5px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      button.send-btn:hover {
+        border-color: rgba(245, 230, 74, 0.8);
+        box-shadow:
+          0 0 0 1px rgba(245, 230, 74, 0.12),
+          0 8px 28px -12px rgba(245, 230, 74, 0.35);
+      }
+      button.send-btn .c {
+        opacity: 1;
+      }
 
-  /* ─── SENT SCREEN ─── */
-  .sent-screen{
-    position:fixed;inset:0;background:var(--bg);z-index:200;
-    display:none;flex-direction:column;align-items:center;justify-content:center;
-    padding:40px;
-  }
-  .sent-screen.open{display:flex;animation:fadein .5s ease}
-  .sent-msg{
-    font-size:22px;font-weight:300;color:var(--fg);
-    letter-spacing:.06em;text-align:center;
-    margin-bottom:40px;
-    line-height:1.6;
-  }
-  .sent-msg em{font-style:normal;color:var(--accent-warm)}
-  .sent-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-  .btn-pdf{
-    appearance:none;border:1px solid rgba(245,230,74,.5);
-    background:linear-gradient(180deg,rgba(245,230,74,.1),rgba(245,230,74,.03));
-    color:var(--accent);font:inherit;font-size:12px;letter-spacing:.16em;
-    text-transform:uppercase;padding:13px 26px;border-radius:5px;cursor:pointer;
-    transition:border-color .2s,box-shadow .2s;
-  }
-  .btn-pdf:hover{border-color:rgba(245,230,74,.8);box-shadow:0 8px 28px -12px rgba(245,230,74,.35)}
-  .btn-back{
-    appearance:none;background:transparent;border:1px solid var(--rule);
-    color:var(--fg-dim);font:inherit;font-size:11px;letter-spacing:.14em;
-    text-transform:uppercase;padding:13px 18px;border-radius:5px;cursor:pointer;
-  }
-  .btn-back:hover{color:var(--fg);border-color:rgba(245,230,74,.25)}
+      /* ─── SENT SCREEN ─── */
+      .sent-screen {
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        z-index: 200;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+      }
+      .sent-screen.open {
+        display: flex;
+        animation: fadein 0.5s ease;
+      }
+      .sent-msg {
+        font-size: 22px;
+        font-weight: 300;
+        color: var(--fg);
+        letter-spacing: 0.06em;
+        text-align: center;
+        margin-bottom: 40px;
+        line-height: 1.6;
+      }
+      .sent-msg em {
+        font-style: normal;
+        color: var(--accent-warm);
+      }
+      .sent-actions {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .btn-pdf {
+        appearance: none;
+        border: 1px solid rgba(245, 230, 74, 0.5);
+        background: linear-gradient(
+          180deg,
+          rgba(245, 230, 74, 0.1),
+          rgba(245, 230, 74, 0.03)
+        );
+        color: var(--accent);
+        font: inherit;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        padding: 13px 26px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+      .btn-pdf:hover {
+        border-color: rgba(245, 230, 74, 0.8);
+        box-shadow: 0 8px 28px -12px rgba(245, 230, 74, 0.35);
+      }
+      .btn-back {
+        appearance: none;
+        background: transparent;
+        border: 1px solid var(--rule);
+        color: var(--fg-dim);
+        font: inherit;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 13px 18px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .btn-back:hover {
+        color: var(--fg);
+        border-color: rgba(245, 230, 74, 0.25);
+      }
 
-  /* ─── PRINT SHEET ─── */
-  #print-sheet{display:none}
+      /* ─── PRINT SHEET ─── */
+      #print-sheet {
+        display: none;
+      }
 
-  @media(max-width:560px){
-    .qtext{font-size:15px}
-    .name-input-wrap input{font-size:18px}
-  }
-</style>
-</head>
-<body>
-
-<!-- ─── INTRO ─── -->
-<div id="intro-screen">
-  <div class="intro-wrap">
-    <pre class="w6-art" aria-label="W6">██╗    ██╗ ██████╗
+      @media (max-width: 560px) {
+        .qtext {
+          font-size: 15px;
+        }
+        .name-input-wrap input {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ─── INTRO ─── -->
+    <div id="intro-screen">
+      <div class="intro-wrap">
+        <pre class="w6-art" aria-label="W6">
+██╗    ██╗ ██████╗
 ██║    ██║██╔════╝
 ██║ █╗ ██║███████╗
 ██║███╗██║██╔═══██╗
 ╚███╔███╔╝╚██████╔╝
- ╚══╝╚══╝  ╚═════╝</pre>
+ ╚══╝╚══╝  ╚═════╝</pre
+        >
 
-    <div class="intro-lines" id="intro-lines"></div>
-    <div class="press-any" id="press-any">
-      <span class="pk">▌</span><span id="press-any-text"></span>
-    </div>
-  </div>
-</div>
-
-<!-- ─── FORM ─── -->
-<div id="form-screen">
-  <div class="form-pre">
-    <span>antigo_conhecido // ingresso.form</span>
-    <span id="sess-label">sess —</span>
-  </div>
-
-  <form id="the-form" autocomplete="off">
-
-    <!-- Q1 -->
-    <div class="qblock">
-      <div class="qn"><span class="num">01</span><span class="rule"></span></div>
-      <div class="qtext">Por que você luta?<br/><em>Por que continua tentando?</em></div>
-      <div class="answer-field" data-n="❯">
-        <textarea name="q1" required placeholder=""></textarea>
+        <div class="intro-lines" id="intro-lines"></div>
+        <div class="press-any" id="press-any">
+          <span class="pk">▌</span><span id="press-any-text"></span>
+        </div>
       </div>
     </div>
 
-    <!-- Q2 -->
-    <div class="qblock">
-      <div class="qn"><span class="num">02</span><span class="rule"></span></div>
-      <div class="qtext">Qual foi o maior erro que você já cometeu?<br/><em>A mancha que nunca desaparece?</em></div>
-      <div class="answer-field" data-n="❯">
-        <textarea name="q2" required placeholder=""></textarea>
+    <!-- ─── FORM ─── -->
+    <div id="form-screen">
+      <div class="form-pre">
+        <span>antigo_conhecido // ingresso.form</span>
+        <span id="sess-label">sess —</span>
+      </div>
+
+      <form id="the-form" autocomplete="off">
+        <!-- Q1 -->
+        <div class="qblock">
+          <div class="qn">
+            <span class="num">01</span><span class="rule"></span>
+          </div>
+          <div class="qtext">
+            Por que você luta?<br /><em>Por que continua tentando?</em>
+          </div>
+          <div class="answer-field" data-n="❯">
+            <textarea name="q1" required placeholder=""></textarea>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="qblock">
+          <div class="qn">
+            <span class="num">02</span><span class="rule"></span>
+          </div>
+          <div class="qtext">
+            Qual foi o maior erro que você já cometeu?<br /><em
+              >A mancha que nunca desaparece?</em
+            >
+          </div>
+          <div class="answer-field" data-n="❯">
+            <textarea name="q2" required placeholder=""></textarea>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="qblock">
+          <div class="qn">
+            <span class="num">03</span><span class="rule"></span>
+          </div>
+          <div class="qtext">
+            Se você um dia precisasse colocar sua vida em risco,<br />qual seria
+            a razão?<br /><em
+              >Por você? Por algo maior? Ou alguém que possa receber seu
+              amor?</em
+            >
+          </div>
+          <div class="answer-field" data-n="❯">
+            <textarea name="q3" required placeholder=""></textarea>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="qblock">
+          <div class="qn">
+            <span class="num">04</span><span class="rule"></span>
+          </div>
+          <div class="qtext">
+            O que pra você é imperdoável?<br /><em
+              >Algo que você nunca seria capaz de fazer, e desprezaria qualquer
+              um responsável por isso?<br />Qual sua relação com tal ato?</em
+            >
+          </div>
+          <div class="answer-field" data-n="❯">
+            <textarea name="q4" required placeholder=""></textarea>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="qblock last">
+          <div class="qn">
+            <span class="num">05</span><span class="rule"></span>
+          </div>
+          <div class="qtext">
+            <span class="hl"
+              >Você já se sentiu como se não pertencesse a onde está?</span
+            ><br />
+            <em>Na verdade, como se não pertencesse a esse mundo?</em>
+            <span class="soft">Você ainda não está sozinho.</span>
+          </div>
+          <div class="answer-field" data-n="❯">
+            <textarea name="q5" required placeholder=""></textarea>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <div class="foot-note">
+            as respostas representam um Antigo Conhecido.<br />não representam
+            você.
+          </div>
+          <button type="submit" class="send-btn">
+            <span class="c">▌</span> enviar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ─── SENT SCREEN ─── -->
+    <div class="sent-screen" id="sent-screen">
+      <div class="sent-msg">Você sabe a quem<br /><em>enviar isso.</em></div>
+      <div class="sent-actions">
+        <button class="btn-pdf" id="btn-pdf">▌ salvar</button>
+        <button class="btn-back" id="btn-back">voltar</button>
       </div>
     </div>
 
-    <!-- Q3 -->
-    <div class="qblock">
-      <div class="qn"><span class="num">03</span><span class="rule"></span></div>
-      <div class="qtext">Se você um dia precisasse colocar sua vida em risco,<br/>qual seria a razão?<br/><em>Por você? Por algo maior? Ou alguém que possa receber seu amor?</em></div>
-      <div class="answer-field" data-n="❯">
-        <textarea name="q3" required placeholder=""></textarea>
-      </div>
-    </div>
+    <!-- ─── PRINT SHEET ─── -->
+    <div id="print-sheet"></div>
 
-    <!-- Q4 -->
-    <div class="qblock">
-      <div class="qn"><span class="num">04</span><span class="rule"></span></div>
-      <div class="qtext">O que pra você é imperdoável?<br/><em>Algo que você nunca seria capaz de fazer, e desprezaria qualquer um responsável por isso?<br/>Qual sua relação com tal ato?</em></div>
-      <div class="answer-field" data-n="❯">
-        <textarea name="q4" required placeholder=""></textarea>
-      </div>
-    </div>
+    <script>
+      // ── session tag
+      const rand = (n, a = "0123456789abcdef") =>
+        Array.from(
+          { length: n },
+          () => a[Math.floor(Math.random() * a.length)],
+        ).join("");
+      const sess = rand(4) + "-" + rand(4);
+      document.getElementById("sess-label").textContent =
+        "sess " + sess.toUpperCase();
 
-    <!-- Q5 -->
-    <div class="qblock last">
-      <div class="qn"><span class="num">05</span><span class="rule"></span></div>
-      <div class="qtext">
-        <span class="hl">Você já se sentiu como se não pertencesse a onde está?</span><br/>
-        <em>Na verdade, como se não pertencesse a esse mundo?</em>
-        <span class="soft">Você ainda não está sozinho.</span>
-      </div>
-      <div class="answer-field" data-n="❯">
-        <textarea name="q5" required placeholder=""></textarea>
-      </div>
-    </div>
+      // ── intro typewriter
+      const introLines = [
+        {
+          html: `Você responderá perguntas que foram feitas para um outro alguém.`,
+          cls: "",
+        },
+        { html: ``, cls: "gap" },
+        {
+          html: `São perguntas destinadas a um <span class="c-warm">Antigo Conhecido</span>.`,
+          cls: "",
+        },
+        { html: ``, cls: "gap" },
+        {
+          html: `<span class="c-warm">Eu já sei seu nome. Eu já sei sua idade. Até mesmo sei onde nasceu.</span>`,
+          cls: "em",
+        },
+        { html: ``, cls: "gap" },
+        {
+          html: `As respostas que aqui escreve não representam a sua pessoa,`,
+          cls: "",
+        },
+        {
+          html: `mas representam um <span class="c-warm">Antigo Conhecido</span>.`,
+          cls: "",
+        },
+        { html: ``, cls: "gap" },
+        {
+          html: `Apesar de suas respostas representarem um <span class="c-warm">Antigo Conhecido</span>,`,
+          cls: "",
+        },
+        {
+          html: `elas não representam <span class="c-warm" style="font-weight:700">você</span>.`,
+          cls: "",
+        },
+        { html: ``, cls: "gap" },
+        {
+          html: `Esse <span class="c-warm" style="font-weight:700">Antigo Conhecido</span> tem um rosto e tem um nome,`,
+          cls: "",
+        },
+        { html: `mas você ainda não o conhece.`, cls: "" },
+        { html: ``, cls: "gap" },
+        { html: `NÃO PENSE EM UM ROSTO.`, cls: "shout" },
+        { html: `NÃO PENSE EM UM NOME.`, cls: "shout" },
+        { html: ``, cls: "gap" },
+        {
+          html: `APENAS <span class="c-warm">MEDOS</span> E <span class="c-warm">LEMBRANÇAS</span>`,
+          cls: "big",
+        },
+        { html: ``, cls: "gap" },
+        { html: `RESPONDA.`, cls: "big" },
+      ];
 
-    <div class="divider"></div>
+      const container = document.getElementById("intro-lines");
 
-    <!-- name -->
-    <div class="name-block">
-      <div class="name-label">Insira o nome que te representa. <b>Não o nome de um Antigo Conhecido</b>, mas o seu.</div>
-      <div class="name-input-wrap">
-        <span class="pr">❯</span>
-        <input type="text" id="nome" name="nome" maxlength="60" required placeholder="seu nome, aqui" />
-      </div>
-    </div>
+      // render line spans immediately (invisible)
+      const spans = introLines.map((l) => {
+        const s = document.createElement("span");
+        s.className = "intro-line" + (l.cls ? " " + l.cls : "");
+        s.innerHTML = "\u00a0";
+        container.appendChild(s);
+        return s;
+      });
 
-    <div class="submit-row">
-      <div class="foot-note">as respostas representam um Antigo Conhecido.<br/>não representam você.</div>
-      <button type="submit" class="send-btn"><span class="c">▌</span> enviar</button>
-    </div>
+      // caret lives only inside press-any, not in typed lines
 
-  </form>
-</div>
-
-<!-- ─── SENT SCREEN ─── -->
-<div class="sent-screen" id="sent-screen">
-  <div class="sent-msg">Você sabe a quem<br/><em>enviar isso.</em></div>
-  <div class="sent-actions">
-    <button class="btn-pdf" id="btn-pdf">▌ salvar</button>
-    <button class="btn-back" id="btn-back">voltar</button>
-  </div>
-</div>
-
-<!-- ─── PRINT SHEET ─── -->
-<div id="print-sheet"></div>
-
-<script>
-// ── session tag
-const rand=(n,a="0123456789abcdef")=>Array.from({length:n},()=>a[Math.floor(Math.random()*a.length)]).join("");
-const sess = rand(4)+"-"+rand(4);
-document.getElementById("sess-label").textContent = "sess " + sess.toUpperCase();
-
-// ── intro typewriter
-const introLines = [
-  { html: `Você responderá perguntas que foram feitas para um outro alguém.`, cls: "" },
-  { html: ``, cls: "gap" },
-  { html: `São perguntas destinadas a um <span class="c-warm">Antigo Conhecido</span>.`, cls: "" },
-  { html: ``, cls: "gap" },
-  { html: `<span class="c-warm">Eu já sei seu nome. Eu já sei sua idade. Até mesmo sei onde nasceu.</span>`, cls: "em" },
-  { html: ``, cls: "gap" },
-  { html: `As respostas que aqui escreve não representam a sua pessoa,`, cls: "" },
-  { html: `mas representam um <span class="c-warm">Antigo Conhecido</span>.`, cls: "" },
-  { html: ``, cls: "gap" },
-  { html: `Apesar de suas respostas representarem um <span class="c-warm">Antigo Conhecido</span>,`, cls: "" },
-  { html: `elas não representam <span class="c-warm" style="font-weight:700">você</span>.`, cls: "" },
-  { html: ``, cls: "gap" },
-  { html: `Esse <span class="c-warm" style="font-weight:700">Antigo Conhecido</span> tem um rosto e tem um nome,`, cls: "" },
-  { html: `mas você ainda não o conhece.`, cls: "" },
-  { html: ``, cls: "gap" },
-  { html: `NÃO PENSE EM UM ROSTO.`, cls: "shout" },
-  { html: `NÃO PENSE EM UM NOME.`, cls: "shout" },
-  { html: ``, cls: "gap" },
-  { html: `APENAS <span class="c-warm">MEDOS</span> E <span class="c-warm">LEMBRANÇAS</span>`, cls: "big" },
-  { html: ``, cls: "gap" },
-  { html: `RESPONDA.`, cls: "big" },
-];
-
-const container = document.getElementById("intro-lines");
-
-// render line spans immediately (invisible)
-const spans = introLines.map(l => {
-  const s = document.createElement("span");
-  s.className = "intro-line" + (l.cls ? " " + l.cls : "");
-  s.innerHTML = "\u00a0";
-  container.appendChild(s);
-  return s;
-});
-
-// caret lives only inside press-any, not in typed lines
-
-async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-// strip html tags to get plain text for typing char by char
-function stripHtml(html){ const d=document.createElement("div");d.innerHTML=html;return d.textContent||""; }
-
-async function typeHtml(span, html, speed){
-  const plain = stripHtml(html);
-  span.classList.add("vis");
-  if(!plain.trim()){ span.innerHTML="\u00a0"; return; }
-  for(let i=0;i<plain.length;i++){
-    // inject caret as inline HTML at end of clipped content
-    span.innerHTML = clipHtml(html, i+1) + '<span class="intro-caret"></span>';
-    const j = plain[i]===" " ? 0 : Math.random()*22;
-    await sleep(speed + j);
-  }
-  span.innerHTML = html; // final: clean
-}
-
-// reveal first n visible chars of an html string
-function clipHtml(html, n){
-  let count = 0, out = "", inTag = false;
-  for(let i=0;i<html.length;i++){
-    const c = html[i];
-    if(c==="<"){ inTag=true; out+=c; continue; }
-    if(inTag){ out+=c; if(c===">") inTag=false; continue; }
-    out+=c; count++;
-    if(count>=n) break;
-  }
-  // close open tags naively (good enough for single-level spans)
-  const opens = (out.match(/<span[^>]*>/g)||[]).length;
-  const closes = (out.match(/<\/span>/g)||[]).length;
-  for(let k=closes;k<opens;k++) out+="</span>";
-  return out;
-}
-
-let introFinished = false;
-let skipRequested = false;
-
-function skipIntro(){
-  skipRequested = true;
-}
-
-const pressAny     = document.getElementById("press-any");
-const pressAnyText = document.getElementById("press-any-text");
-
-const PRESS_TEXT = "pressione qualquer tecla para continuar";
-
-async function typePressAny(){
-  pressAny.classList.add("vis");
-  pressAnyText.textContent = "";
-  for(let i=0;i<PRESS_TEXT.length;i++){
-    pressAnyText.textContent += PRESS_TEXT[i];
-    await sleep(28 + Math.random()*14);
-  }
-}
-
-(async ()=>{
-  await sleep(600);
-  for(let i=0;i<introLines.length;i++){
-    const l = introLines[i];
-    if(skipRequested){
-      for(let k=i;k<introLines.length;k++){
-        spans[k].innerHTML = introLines[k].html || "\u00a0";
-        spans[k].classList.add("vis");
+      async function sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms));
       }
-      break;
-    }
-    const plain = stripHtml(l.html||"");
-    const speed = l.cls==="shout"||l.cls==="big" ? 55 : 32;
-    const pause = l.cls==="big" ? 320 : l.cls==="gap" ? 0 : 60;
-    await typeHtml(spans[i], l.html||"", speed);
-    await sleep(skipRequested ? 0 : pause);
-  }
-  introFinished = true;
-  await typePressAny();
-})();
 
-function proceedToForm(){
-  if(!introFinished){ return; }
-  document.getElementById("intro-screen").classList.add("hidden");
-  const fs = document.getElementById("form-screen");
-  fs.classList.add("vis");
-  document.getElementById("nome").focus();
-}
+      // strip html tags to get plain text for typing char by char
+      function stripHtml(html) {
+        const d = document.createElement("div");
+        d.innerHTML = html;
+        return d.textContent || "";
+      }
 
-document.getElementById("intro-screen").addEventListener("click", proceedToForm);
+      async function typeHtml(span, html, speed) {
+        const plain = stripHtml(html);
+        span.classList.add("vis");
+        if (!plain.trim()) {
+          span.innerHTML = "\u00a0";
+          return;
+        }
+        for (let i = 0; i < plain.length; i++) {
+          // inject caret as inline HTML at end of clipped content
+          span.innerHTML =
+            clipHtml(html, i + 1) + '<span class="intro-caret"></span>';
+          const j = plain[i] === " " ? 0 : Math.random() * 22;
+          await sleep(speed + j);
+        }
+        span.innerHTML = html; // final: clean
+      }
 
-document.addEventListener("keydown", e=>{
-  const screen = document.getElementById("intro-screen");
-  if(screen.classList.contains("hidden")) return;
-  if(!introFinished) return;
-  e.preventDefault();
-  proceedToForm();
-});
+      // reveal first n visible chars of an html string
+      function clipHtml(html, n) {
+        let count = 0,
+          out = "",
+          inTag = false;
+        for (let i = 0; i < html.length; i++) {
+          const c = html[i];
+          if (c === "<") {
+            inTag = true;
+            out += c;
+            continue;
+          }
+          if (inTag) {
+            out += c;
+            if (c === ">") inTag = false;
+            continue;
+          }
+          out += c;
+          count++;
+          if (count >= n) break;
+        }
+        // close open tags naively (good enough for single-level spans)
+        const opens = (out.match(/<span[^>]*>/g) || []).length;
+        const closes = (out.match(/<\/span>/g) || []).length;
+        for (let k = closes; k < opens; k++) out += "</span>";
+        return out;
+      }
 
-// ── reset
+      let introFinished = false;
+      let skipRequested = false;
 
-// ── submit
-const form = document.getElementById("the-form");
-const sentScreen = document.getElementById("sent-screen");
-const printSheet = document.getElementById("print-sheet");
+      function skipIntro() {
+        skipRequested = true;
+      }
 
-const questions = [
-  "Por que você luta? Por que continua tentando?",
-  "Qual foi o maior erro que você já cometeu? A mancha que nunca desaparece?",
-  "Se você um dia precisasse colocar sua vida em risco, qual seria a razão?",
-  "O que pra você é imperdoável?",
-  "Você já se sentiu como se não pertencesse a onde está?"
-];
+      const pressAny = document.getElementById("press-any");
+      const pressAnyText = document.getElementById("press-any-text");
 
-let lastNome = "";
-let lastAnswers = [];
+      const PRESS_TEXT = "pressione qualquer tecla para continuar";
 
-function buildPrintSheet(nome, answers){
-  printSheet.innerHTML = `
-    <div class="ph"><span>W6</span> // Antigo Conhecido // Ingresso · ${new Date().toLocaleDateString('pt-BR')}</div>
+      async function typePressAny() {
+        pressAny.classList.add("vis");
+        pressAnyText.textContent = "";
+        for (let i = 0; i < PRESS_TEXT.length; i++) {
+          pressAnyText.textContent += PRESS_TEXT[i];
+          await sleep(28 + Math.random() * 14);
+        }
+      }
+
+      (async () => {
+        await sleep(600);
+        for (let i = 0; i < introLines.length; i++) {
+          const l = introLines[i];
+          if (skipRequested) {
+            for (let k = i; k < introLines.length; k++) {
+              spans[k].innerHTML = introLines[k].html || "\u00a0";
+              spans[k].classList.add("vis");
+            }
+            break;
+          }
+          const plain = stripHtml(l.html || "");
+          const speed = l.cls === "shout" || l.cls === "big" ? 55 : 32;
+          const pause = l.cls === "big" ? 320 : l.cls === "gap" ? 0 : 60;
+          await typeHtml(spans[i], l.html || "", speed);
+          await sleep(skipRequested ? 0 : pause);
+        }
+        introFinished = true;
+        await typePressAny();
+      })();
+
+      function proceedToForm() {
+        if (!introFinished) {
+          return;
+        }
+        document.getElementById("intro-screen").classList.add("hidden");
+        const fs = document.getElementById("form-screen");
+        fs.classList.add("vis");
+        document.querySelector("textarea[name='q1']").focus();
+      }
+
+      document
+        .getElementById("intro-screen")
+        .addEventListener("click", proceedToForm);
+
+      document.addEventListener("keydown", (e) => {
+        const screen = document.getElementById("intro-screen");
+        if (screen.classList.contains("hidden")) return;
+        if (!introFinished) return;
+        e.preventDefault();
+        proceedToForm();
+      });
+
+      // ── reset
+
+      // ── submit
+      const form = document.getElementById("the-form");
+      const sentScreen = document.getElementById("sent-screen");
+      const printSheet = document.getElementById("print-sheet");
+
+      const questions = [
+        "Por que você luta? Por que continua tentando?",
+        "Qual foi o maior erro que você já cometeu? A mancha que nunca desaparece?",
+        "Se você um dia precisasse colocar sua vida em risco, qual seria a razão?",
+        "O que pra você é imperdoável?",
+        "Você já se sentiu como se não pertencesse a onde está?",
+      ];
+
+      let lastNome = "";
+      let lastAnswers = [];
+
+      function buildPrintSheet(nome, answers) {
+        printSheet.innerHTML = `
+    <div class="ph"><span>W6</span> // Antigo Conhecido // Ingresso · ${new Date().toLocaleDateString("pt-BR")}</div>
     <div class="pa">
       <div class="pn"><b>nome</b></div>
       <div class="pv">${nome}</div>
     </div>
-    ${answers.map((a,i)=>`
+    ${answers
+      .map(
+        (a, i) => `
     <div class="pa">
-      <div class="pn"><b>${String(i+1).padStart(2,'0')}</b> · pergunta</div>
+      <div class="pn"><b>${String(i + 1).padStart(2, "0")}</b> · pergunta</div>
       <div class="pt">${questions[i]}</div>
-      <div class="pv">${a||'—'}</div>
-    </div>`).join('')}
-    <div class="pfoot"><span>W6</span> · sessão ${sess.toUpperCase()} · ${new Date().toLocaleString('pt-BR')}</div>`;
-}
+      <div class="pv">${a || "—"}</div>
+    </div>`,
+      )
+      .join("")}
+    <div class="pfoot"><span>W6</span> · sessão ${sess.toUpperCase()} · ${new Date().toLocaleString("pt-BR")}</div>`;
+      }
 
-form.addEventListener("submit", e=>{
-  e.preventDefault();
-  const d = new FormData(form);
-  lastNome = (d.get("nome")||"").toString().trim();
-  lastAnswers = [1,2,3,4,5].map(n=>(d.get("q"+n)||"").toString().trim());
-  buildPrintSheet(lastNome, lastAnswers);
-  sentScreen.classList.add("open");
-});
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const d = new FormData(form);
+        lastNome = (d.get("nome") || "").toString().trim();
+        lastAnswers = [1, 2, 3, 4, 5].map((n) =>
+          (d.get("q" + n) || "").toString().trim(),
+        );
+        buildPrintSheet(lastNome, lastAnswers);
+        sentScreen.classList.add("open");
+      });
 
-document.getElementById("btn-pdf").addEventListener("click", async () => {
-  await document.fonts.ready;
+      document.getElementById("btn-pdf").addEventListener("click", async () => {
+        await document.fonts.ready;
 
-  const PAD = 56;
-  const W = 860;
-  const LINE = 22;
-  const SMALL = 13;
-  const BODY = 15;
-  const BG = "#0c0d0c";
-  const FG = "#d0ccc0";
-  const DIM = "#7a7870";
-  const FAINT = "#3e3d38";
-  const YELLOW = "#f5e64a";
-  const RULE = "#1e201e";
-  const FONT = "JetBrains Mono, ui-monospace, monospace";
+        const PAD = 56;
+        const W = 860;
+        const LINE = 22;
+        const SMALL = 13;
+        const BODY = 15;
+        const BG = "#0c0d0c";
+        const FG = "#d0ccc0";
+        const DIM = "#7a7870";
+        const FAINT = "#3e3d38";
+        const YELLOW = "#f5e64a";
+        const RULE = "#1e201e";
+        const FONT = "JetBrains Mono, ui-monospace, monospace";
 
-  // measure height first
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
+        // measure height first
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
 
-  function wrapText(ctx, text, maxW) {
-    if (!text) return ["—"];
-    const words = text.split(" ");
-    const lines = [];
-    let cur = "";
-    for (const w of words) {
-      const test = cur ? cur + " " + w : w;
-      if (ctx.measureText(test).width > maxW && cur) {
-        lines.push(cur); cur = w;
-      } else { cur = test; }
-    }
-    if (cur) lines.push(cur);
-    return lines.length ? lines : ["—"];
-  }
+        function wrapText(ctx, text, maxW) {
+          if (!text) return ["—"];
+          const words = text.split(" ");
+          const lines = [];
+          let cur = "";
+          for (const w of words) {
+            const test = cur ? cur + " " + w : w;
+            if (ctx.measureText(test).width > maxW && cur) {
+              lines.push(cur);
+              cur = w;
+            } else {
+              cur = test;
+            }
+          }
+          if (cur) lines.push(cur);
+          return lines.length ? lines : ["—"];
+        }
 
-  // build draw list
-  const blocks = [];
-  function addText(text, color, size, bold, marginTop = 0) {
-    blocks.push({ text, color, size, bold, marginTop });
-  }
-  function addRule(marginTop = 0) {
-    blocks.push({ rule: true, marginTop });
-  }
+        // build draw list
+        const blocks = [];
+        function addText(text, color, size, bold, marginTop = 0) {
+          blocks.push({ text, color, size, bold, marginTop });
+        }
+        function addRule(marginTop = 0) {
+          blocks.push({ rule: true, marginTop });
+        }
 
-  addText("W6  //  ANTIGO CONHECIDO  //  SACRILÉGIO", YELLOW, SMALL, false, 0);
-  addText(new Date().toLocaleDateString("pt-BR") + "  ·  " + sess.toUpperCase(), FAINT, SMALL, false, 6);
-  addRule(20);
+        addText(
+          "W6  //  ANTIGO CONHECIDO  //  SACRILÉGIO",
+          YELLOW,
+          SMALL,
+          false,
+          0,
+        );
+        addText(
+          new Date().toLocaleDateString("pt-BR") + "  ·  " + sess.toUpperCase(),
+          FAINT,
+          SMALL,
+          false,
+          6,
+        );
+        addRule(20);
 
-  addText("NOME", FAINT, SMALL, false, 24);
-  addText(lastNome || "—", FG, BODY, false, 6);
-  addRule(18);
+        addText("NOME", FAINT, SMALL, false, 24);
+        addText(lastNome || "—", FG, BODY, false, 6);
+        addRule(18);
 
-  const qs = [
-    "Por que você luta? Por que continua tentando?",
-    "Qual foi o maior erro que você já cometeu? A mancha que nunca desaparece?",
-    "Se você precisasse colocar sua vida em risco, qual seria a razão?",
-    "O que pra você é imperdoável?",
-    "Você já se sentiu como se não pertencesse a esse mundo?"
-  ];
+        const qs = [
+          "Por que você luta? Por que continua tentando?",
+          "Qual foi o maior erro que você já cometeu? A mancha que nunca desaparece?",
+          "Se você precisasse colocar sua vida em risco, qual seria a razão?",
+          "O que pra você é imperdoável?",
+          "Você já se sentiu como se não pertencesse a esse mundo?",
+        ];
 
-  lastAnswers.forEach((ans, i) => {
-    addText("0" + (i + 1) + "  ·  " + qs[i], YELLOW, SMALL, false, 24);
-    addText(ans || "—", DIM, BODY, false, 8);
-    if (i < lastAnswers.length - 1) addRule(18);
-  });
+        lastAnswers.forEach((ans, i) => {
+          addText("0" + (i + 1) + "  ·  " + qs[i], YELLOW, SMALL, false, 24);
+          addText(ans || "—", DIM, BODY, false, 8);
+          if (i < lastAnswers.length - 1) addRule(18);
+        });
 
-  addRule(28);
-  addText("W6  ·  SESSÃO " + sess.toUpperCase(), FAINT, SMALL, false, 10);
+        addRule(28);
+        addText("W6  ·  SESSÃO " + sess.toUpperCase(), FAINT, SMALL, false, 10);
 
-  // measure total height
-  ctx.font = `${BODY}px ${FONT}`;
-  const textW = W - PAD * 2;
-  let totalH = PAD;
-  for (const b of blocks) {
-    totalH += b.marginTop || 0;
-    if (b.rule) { totalH += 1 + 8; continue; }
-    ctx.font = `${b.size}px ${FONT}`;
-    const wrapped = wrapText(ctx, b.text, textW);
-    totalH += wrapped.length * (b.size + 7);
-  }
-  totalH += PAD;
+        // measure total height
+        ctx.font = `${BODY}px ${FONT}`;
+        const textW = W - PAD * 2;
+        let totalH = PAD;
+        for (const b of blocks) {
+          totalH += b.marginTop || 0;
+          if (b.rule) {
+            totalH += 1 + 8;
+            continue;
+          }
+          ctx.font = `${b.size}px ${FONT}`;
+          const wrapped = wrapText(ctx, b.text, textW);
+          totalH += wrapped.length * (b.size + 7);
+        }
+        totalH += PAD;
 
-  canvas.width = W;
-  canvas.height = totalH;
+        canvas.width = W;
+        canvas.height = totalH;
 
-  // draw bg
-  ctx.fillStyle = BG;
-  ctx.fillRect(0, 0, W, totalH);
+        // draw bg
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, W, totalH);
 
-  // draw blocks
-  let y = PAD;
-  for (const b of blocks) {
-    y += b.marginTop || 0;
-    if (b.rule) {
-      ctx.fillStyle = RULE;
-      ctx.fillRect(PAD, y, W - PAD * 2, 1);
-      y += 9;
-      continue;
-    }
-    ctx.font = `${b.size}px ${FONT}`;
-    ctx.fillStyle = b.color;
-    const wrapped = wrapText(ctx, b.text, textW);
-    for (const line of wrapped) {
-      ctx.fillText(line, PAD, y + b.size);
-      y += b.size + 7;
-    }
-  }
+        // draw blocks
+        let y = PAD;
+        for (const b of blocks) {
+          y += b.marginTop || 0;
+          if (b.rule) {
+            ctx.fillStyle = RULE;
+            ctx.fillRect(PAD, y, W - PAD * 2, 1);
+            y += 9;
+            continue;
+          }
+          ctx.font = `${b.size}px ${FONT}`;
+          ctx.fillStyle = b.color;
+          const wrapped = wrapText(ctx, b.text, textW);
+          for (const line of wrapped) {
+            ctx.fillText(line, PAD, y + b.size);
+            y += b.size + 7;
+          }
+        }
 
-  canvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "sacrilegio_" + sess + ".png";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 3000);
-  }, "image/png");
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "sacrilegio_" + sess + ".png";
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 3000);
+        }, "image/png");
 
-  // generate .txt
-  const txtLines = [
-    "W6 // ANTIGO CONHECIDO // SACRILÉGIO",
-    new Date().toLocaleDateString("pt-BR") + "  ·  " + sess.toUpperCase(),
-    "",
-    "NOME",
-    lastNome || "—",
-    "",
-    ...lastAnswers.flatMap((ans, i) => [
-      `[0${i+1}] ${qs[i]}`,
-      ans || "—",
-      ""
-    ]),
-    "W6  ·  SESSÃO " + sess.toUpperCase()
-  ];
-  const txtBlob = new Blob([txtLines.join("\n")], { type: "text/plain;charset=utf-8" });
-  const ta = document.createElement("a");
-  ta.href = URL.createObjectURL(txtBlob);
-  ta.download = "sacrilegio_" + sess + ".txt";
-  ta.click();
-  setTimeout(() => URL.revokeObjectURL(ta.href), 3000);
-});
+        // generate .txt
+        const txtLines = [
+          "W6 // ANTIGO CONHECIDO // SACRILÉGIO",
+          new Date().toLocaleDateString("pt-BR") + "  ·  " + sess.toUpperCase(),
+          "",
+          "NOME",
+          lastNome || "—",
+          "",
+          ...lastAnswers.flatMap((ans, i) => [
+            `[0${i + 1}] ${qs[i]}`,
+            ans || "—",
+            "",
+          ]),
+          "W6  ·  SESSÃO " + sess.toUpperCase(),
+        ];
+        const txtBlob = new Blob([txtLines.join("\n")], {
+          type: "text/plain;charset=utf-8",
+        });
+        const ta = document.createElement("a");
+        ta.href = URL.createObjectURL(txtBlob);
+        ta.download = "sacrilegio_" + sess + ".txt";
+        ta.click();
+        setTimeout(() => URL.revokeObjectURL(ta.href), 3000);
+      });
 
-document.getElementById("btn-back").addEventListener("click", ()=>{
-  sentScreen.classList.remove("open");
-});
-</script>
-</body>
+      document.getElementById("btn-back").addEventListener("click", () => {
+        sentScreen.classList.remove("open");
+      });
+    </script>
+  </body>
 </html>
