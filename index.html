@@ -861,16 +861,11 @@
         "Você já se sentiu como se não pertencesse a onde está?",
       ];
 
-      let lastNome = "";
       let lastAnswers = [];
 
-      function buildPrintSheet(nome, answers) {
+      function buildPrintSheet(answers) {
         printSheet.innerHTML = `
     <div class="ph"><span>W6</span> // Antigo Conhecido // Ingresso · ${new Date().toLocaleDateString("pt-BR")}</div>
-    <div class="pa">
-      <div class="pn"><b>nome</b></div>
-      <div class="pv">${nome}</div>
-    </div>
     ${answers
       .map(
         (a, i) => `
@@ -887,11 +882,10 @@
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         const d = new FormData(form);
-        lastNome = (d.get("nome") || "").toString().trim();
         lastAnswers = [1, 2, 3, 4, 5].map((n) =>
           (d.get("q" + n) || "").toString().trim(),
         );
-        buildPrintSheet(lastNome, lastAnswers);
+        buildPrintSheet(lastAnswers);
         sentScreen.classList.add("open");
       });
 
@@ -957,10 +951,6 @@
           6,
         );
         addRule(20);
-
-        addText("NOME", FAINT, SMALL, false, 24);
-        addText(lastNome || "—", FG, BODY, false, 6);
-        addRule(18);
 
         const qs = [
           "Por que você luta? Por que continua tentando?",
@@ -1034,9 +1024,6 @@
         const txtLines = [
           "W6 // ANTIGO CONHECIDO // SACRILÉGIO",
           new Date().toLocaleDateString("pt-BR") + "  ·  " + sess.toUpperCase(),
-          "",
-          "NOME",
-          lastNome || "—",
           "",
           ...lastAnswers.flatMap((ans, i) => [
             `[0${i + 1}] ${qs[i]}`,
